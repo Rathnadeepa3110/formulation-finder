@@ -25,11 +25,13 @@ function latinHypercube(k: number, n: number, rand: () => number): number[][] {
     const bins = Array.from({ length: n }, (_, i) => (i + rand()) / n);
     for (let i = n - 1; i > 0; i--) {
       const s = Math.floor(rand() * (i + 1));
-      [bins[i], bins[s]] = [bins[s], bins[i]];
+      const tmp = bins[i]!;
+      bins[i] = bins[s]!;
+      bins[s] = tmp;
     }
     cols.push(bins.map((u) => u * 2 - 1));
   }
-  return Array.from({ length: n }, (_, i) => cols.map((c) => c[i]));
+  return Array.from({ length: n }, (_, i) => cols.map((c) => c[i]!));
 }
 
 /** Face-centred central composite design (alpha = 1 keeps runs inside the range). */
@@ -84,7 +86,7 @@ export function generateDesign(
 
   return coded.map((row, i) => ({
     trial: i + 1,
-    levels: row.map((c, j) => decode(materials[j], c)),
+    levels: row.map((c, j) => decode(materials[j]!, c)),
     results: emptyResults(),
   }));
 }
